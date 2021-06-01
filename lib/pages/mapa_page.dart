@@ -52,7 +52,7 @@ class _MapaPageState extends State<MapaPage> {
         new CameraPosition(target: state.ubicacion, zoom: 15);
 
     final mapaBloc = BlocProvider.of<MapaBloc>(context);
-    aux();
+    _crearRuta();
     return BlocBuilder<MapaBloc, MapaState>(
       builder: (_, state) {
         return GoogleMap(
@@ -68,18 +68,19 @@ class _MapaPageState extends State<MapaPage> {
     );
   }
 
-  void aux() async {
+  void _crearRuta() async {
     final mapaBloc = context.read<MapaBloc>();
     final TrafficService trafficService = new TrafficService();
     final inicio = context.read<MiUbicacionBloc>().state.ubicacion;
     final destino = LatLng(-27.352388, -55.902860);
-// -27.352388, -55.902860
+
     //Obtener informacion del destino
     ReverseQueryResponse reverseQueryResponse =
         await trafficService.getCoordenadasInfo(destino);
 
     final drivingResponse =
         await trafficService.getCoordsInicioYFin(inicio, destino);
+    //LatLong codificados
     final geometry = drivingResponse.routes[0].geometry;
     final duration = drivingResponse.routes[0].duration;
     final distance = drivingResponse.routes[0].distance;
